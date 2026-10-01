@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PREVIENE SHOP — Tienda educativa</title>
+<style>
+:root{
+  --pink:#ff4f9a; --purple:#6d4aff; --blue:#26a9e0; --yellow:#ffc857;
+  --green:#49c878; --ink:#202038; --bg:#fff7fb; --card:#ffffff;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(135deg,#fff7fb,#f2efff);color:var(--ink)}
+header{background:linear-gradient(135deg,#ff4f9a,#704cff);color:white;padding:28px 20px 24px;position:sticky;top:0;z-index:5;box-shadow:0 4px 18px #0002}
+.wrap{max-width:1100px;margin:auto}
+.logo{font-weight:900;font-size:31px;letter-spacing:-1px}
+.tag{margin-top:6px;font-size:15px;opacity:.95}
+.notice{margin:18px auto 0;background:#fff;color:#39285f;border-radius:18px;padding:12px 16px;font-size:13px;max-width:1100px;box-shadow:0 5px 18px #0001}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}
+button,.filter{border:0;border-radius:999px;padding:10px 15px;font-weight:800;cursor:pointer}
+button{background:#fff;color:var(--purple);box-shadow:0 3px 10px #0001}
+button.active{background:var(--purple);color:white}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;padding-bottom:30px}
+.card{background:var(--card);border-radius:24px;padding:18px;box-shadow:0 8px 25px #30205014;border:2px solid transparent;transition:.2s;position:relative}
+.card:hover{transform:translateY(-3px);border-color:#eadfff}
+.icon{width:64px;height:64px;border-radius:20px;display:grid;place-items:center;font-size:35px;margin-bottom:12px}
+.pink{background:#ffe1ef}.purple{background:#e8e2ff}.blue{background:#dff4ff}.yellow{background:#fff0c8}.green{background:#def8e7}
+.card h3{margin:4px 0 7px;font-size:19px}
+.card p{font-size:14px;line-height:1.45;margin:0 0 12px;color:#55546b;min-height:61px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.price{font-size:18px;font-weight:900}
+.info{background:var(--ink);color:white;padding:9px 12px;border-radius:12px;font-size:12px}
+.badge{position:absolute;top:14px;right:14px;background:#fff0a8;padding:5px 8px;border-radius:9px;font-size:10px;font-weight:900}
+footer{background:#211d35;color:#fff;padding:28px 20px}
+footer p{max-width:1100px;margin:7px auto;line-height:1.5;font-size:13px;color:#ddd}
+.modal{display:none;position:fixed;inset:0;background:#171329aa;z-index:20;padding:20px;align-items:center;justify-content:center}
+.modal.show{display:flex}
+.modalbox{background:white;border-radius:26px;max-width:650px;width:100%;max-height:90vh;overflow:auto;padding:25px;position:relative}
+.close{position:absolute;right:16px;top:14px;background:#f0edff;color:#34206e}
+.modalbox h2{margin:0 40px 8px 0}
+.modalbox h4{margin:18px 0 5px;color:var(--purple)}
+.modalbox li{margin:7px 0;line-height:1.4}
+.sources{font-size:12px;color:#68667a}
+@media(max-width:600px){.logo{font-size:25px}.grid{grid-template-columns:1fr 1fr}.card{padding:14px}.card p{min-height:auto}.icon{width:54px;height:54px;font-size:28px}}
+@media(max-width:420px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="logo">🛍️ PREVIENE SHOP</div>
+    <div class="tag">Una tienda educativa para conocer tus opciones de anticoncepción</div>
+  </div>
+</header>
+
+<div class="notice wrap">
+  <b>IMPORTANTE:</b> esto es un prototipo educativo. Los precios son <b>referenciales de Ecuador</b> y pueden variar según farmacia, marca y fecha. Haz clic en cada producto para conocer qué es, qué protege y qué debes saber.
+</div>
+<div class="notice wrap" style="margin-top:10px;background:#f7f4ff">
+  <b>Referencia de precios:</b> se tomaron precios publicados recientemente por farmacias de Ecuador para algunos productos; los métodos que requieren colocación o procedimiento (como implantes y DIU) se muestran como “Consultar” porque el costo total depende del establecimiento y del procedimiento.
+</div>
+
+<main class="wrap">
+  <div class="toolbar">
+    <button class="active" onclick="filterCards('todos',this)">Todos</button>
+    <button onclick="filterCards('barrera',this)">🛡️ Barrera</button>
+    <button onclick="filterCards('hormonal',this)">💊 Hormonales</button>
+    <button onclick="filterCards('larga',this)">⏳ Larga duración</button>
+    <button onclick="filterCards('urgencia',this)">🚨 Urgencia</button>
+  </div>
+  <section class="grid" id="grid"></section>
+</main>
+
+<div class="modal" id="modal">
+  <div class="modalbox">
+    <button class="close" onclick="closeModal()">✕</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <p><b>Mensaje clave:</b> ningún método es perfecto para todas las personas. Los preservativos son los métodos anticonceptivos que además ayudan a reducir el riesgo de ITS; para elegir un método hormonal o de larga duración conviene recibir orientación de un profesional de salud.</p>
+    <p class="sources"><b>Fuentes:</b> Organización Mundial de la Salud (OMS), información sobre anticoncepción y DIU, 2026; OMS, anticoncepción de urgencia. La información de este prototipo es educativa y no sustituye una consulta médica.</p>
+  </div>
+</footer>
+
+<script>
+const products = [
+ {name:"Condón externo",price:"$3,02 / 5 unidades",icon:"🛡️",color:"pink",cat:["barrera"],badge:"DOBLE PROTECCIÓN",desc:"Método de barrera que ayuda a prevenir el embarazo y reduce el riesgo de ITS.",info:["Se coloca antes del contacto genital y se usa durante toda la relación sexual.","Es el único de esta lista que ayuda directamente a prevenir ITS además del embarazo.","Debe usarse uno nuevo cada vez."]},
+ {name:"Condón interno",price:"$2,05 / 3 unidades",icon:"🛡️",color:"blue",cat:["barrera"],badge:"BARRERA",desc:"Método de barrera que se coloca dentro de la vagina.",info:["Ayuda a prevenir el embarazo y también puede reducir el riesgo de ITS.","Se utiliza durante la relación sexual y no debe combinarse con un condón externo.","Consulta a un profesional si necesitas aprender su uso correcto."]},
+ {name:"Pastilla del día después",price:"$6,10",icon:"🚨",color:"pink",cat:["urgencia"],badge:"ANTICONCEPCIÓN DE URGENCIA",desc:"Método de emergencia para reducir el riesgo de embarazo después de una relación sin protección o un fallo anticonceptivo.",info:["Debe utilizarse lo antes posible; algunas opciones pueden utilizarse hasta 5 días después, según el principio activo.","No debe usarse como método anticonceptivo habitual.","No protege contra ITS y no interrumpe un embarazo ya establecido."]},
+ {name:"Anticonceptivo oral mensual",price:"$2,35 / 21 comprimidos",icon:"💊",color:"purple",cat:["hormonal"],badge:"USO REGULAR",desc:"Anticonceptivo hormonal que se utiliza de forma regular según las indicaciones del producto.",info:["Su uso correcto y constante es importante para mantener su eficacia.","Puede producir cambios en el sangrado u otros efectos secundarios.","No protege contra ITS; es recomendable recibir orientación de un profesional de salud."]},
+ {name:"Parche anticonceptivo (Evra)",price:"$18,90 / 3 parches",icon:"🩹",color:"yellow",cat:["hormonal"],badge:"HORMONAL",desc:"Parche que libera hormonas y se cambia periódicamente.",info:["Libera hormonas a través de la piel para prevenir el embarazo.","Requiere cambiarlo según el esquema indicado.","No protege contra ITS."]},
+ {name:"Anillo vaginal",price:"$4,88 / 1 ampolla",icon:"⭕",color:"purple",cat:["hormonal"],badge:"HORMONAL",desc:"Anillo flexible que libera hormonas y se usa dentro de la vagina.",info:["Libera hormonas y se utiliza siguiendo un esquema según el producto.","No requiere tomar una pastilla todos los días.","No protege contra ITS."]},
+ {name:"Inyección anticonceptiva (Mesigyna)",price:"$4,88",icon:"💉",color:"blue",cat:["hormonal"],badge:"PERIÓDICA",desc:"Método hormonal administrado por personal de salud a intervalos regulares.",info:["El intervalo depende del tipo de inyección.","Puede producir cambios en el sangrado y otros efectos secundarios.","No protege contra ITS; requiere seguimiento sanitario."]},
+ {name:"Implante anticonceptivo",price:"Consultar",icon:"📌",color:"green",cat:["hormonal","larga"],badge:"LARGA DURACIÓN",desc:"Pequeño implante colocado bajo la piel del brazo por personal de salud.",info:["Libera progestágeno y proporciona anticoncepción de larga duración.","No requiere acordarse diariamente de una pastilla.","No protege contra ITS. La duración depende del producto."]},
+ {name:"DIU hormonal",price:"Consultar",icon:"〰️",color:"pink",cat:["hormonal","larga"],badge:"LARGA DURACIÓN",desc:"Dispositivo colocado en el útero por personal de salud.",info:["Libera levonorgestrel y ofrece protección de larga duración.","Según el tipo, puede durar varios años.","No protege contra ITS. La fertilidad vuelve después de retirarlo."]},
+ {name:"DIU de cobre",price:"Consultar",icon:"🔸",color:"yellow",cat:["larga","urgencia"],badge:"SIN HORMONAS",desc:"Dispositivo sin hormonas que se coloca en el útero.",info:["Es un método de larga duración y muy eficaz.","También puede utilizarse como anticoncepción de urgencia cuando se coloca dentro de los 5 días posteriores a una relación sin protección.","No protege contra ITS. Debe colocarlo personal de salud."]}
+];
+
+function render(list=products){
+ const grid=document.getElementById("grid");
+ grid.innerHTML=list.map((p,i)=>`
+ <article class="card">
+   ${p.badge?`<span class="badge">${p.badge}</span>`:""}
+   <div class="icon ${p.color}">${p.icon}</div>
+   <h3>${p.name}</h3>
+   <p>${p.desc}</p>
+   <div class="row"><span class="price">${p.price}</span><button class="info" onclick="openModal(${i})">VER INFO →</button></div>
+ </article>`).join("");
+}
+function openModal(i){
+ const p=products[i];
+ document.getElementById("modalContent").innerHTML=`
+   <div style="font-size:42px">${p.icon}</div>
+   <h2>${p.name}</h2>
+   <p><b>Precio del prototipo:</b> ${p.price} <small>(ficticio)</small></p>
+   <h4>¿QUÉ ES?</h4><p>${p.desc}</p>
+   <h4>LO QUE DEBES SABER</h4><ul>${p.info.map(x=>`<li>${x}</li>`).join("")}</ul>
+   <h4>🩺 RECUERDA</h4>
+   <p>La elección depende de la salud, preferencias y necesidades de cada persona. Un profesional de salud puede orientar sobre cuál es adecuado.</p>`;
+ document.getElementById("modal").classList.add("show");
+}
+function closeModal(){document.getElementById("modal").classList.remove("show")}
+function filterCards(cat,btn){
+ document.querySelectorAll(".toolbar button").forEach(b=>b.classList.remove("active"));
+ btn.classList.add("active");
+ render(cat==="todos"?products:products.filter(p=>p.cat.includes(cat)));
+}
+document.getElementById("modal").addEventListener("click",e=>{if(e.target.id==="modal")closeModal()});
+render();
+</script>
+</body>
+</html>
